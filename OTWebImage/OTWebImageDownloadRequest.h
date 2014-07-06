@@ -12,12 +12,14 @@
 @protocol OTWebImageDownloadRequestDelegate <NSObject>
 
 - (void)otWebImageDownloadRequest:(OTWebImageDownloadRequest *)request
-                 imageDataUpdated:(NSData *)imageData;
-- (void)otWebImageDownloadRequest:(OTWebImageDownloadRequest *)request
         downloadSuccessedWithData:(NSData *)imageData
                       isFromCache:(BOOL)isFromCache;
 - (void)otWebImageDownloadRequest:(OTWebImageDownloadRequest *)request
                   failedWithError:(NSError *)error;
+
+@optional
+- (void)otWebImageDownloadRequest:(OTWebImageDownloadRequest *)request
+                 imageDataUpdated:(NSData *)imageData;
 
 @end
 
