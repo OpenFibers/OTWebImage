@@ -7,12 +7,22 @@
 //
 
 #import "AppDelegate.h"
+#import "NSImageView+WebCache.h"
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // Insert code here to initialize your application
+    NSView *windowContentView = self.window.contentView;
+    NSImageView *imageView = [[NSImageView alloc] initWithFrame:windowContentView.bounds];
+    [imageView setImageURL:[NSURL URLWithString:@"http://p3.music.126.net/xaewG0WYxo0Ry0pw8puIBw==/1907652674296516.jpg"]];
+    [windowContentView addSubview:imageView];
+}
+
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
+{
+    [self.window makeKeyAndOrderFront:self];
+    return YES;
 }
 
 @end
