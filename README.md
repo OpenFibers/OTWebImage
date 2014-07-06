@@ -10,8 +10,10 @@ Asynchronous image downloader with cache support with an NSImageView category
     [imageView setImageURL:[NSURL URLWithString:imageURLString]];
 ```
 
-Then the web image will be loaded into `imageView`.
+Then the web image will be loaded into `imageView`, like this:
 
-#Use libs
+![ScreenShot](https://raw.githubusercontent.com/OpenFibers/OTWebImage/master/ScreenShot1.png "ScreenShot")
+
+#Used libs
 [OTFileCacheManager](https://github.com/OpenFibers/OTFileCacheManager "OTFileCacheManager")  
 [OTHTTPRequest](https://github.com/OpenFibers/OTHTTPRequest "OTHTTPRequest")
