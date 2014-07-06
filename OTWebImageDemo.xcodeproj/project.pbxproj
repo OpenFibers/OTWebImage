@@ -18,6 +18,10 @@
 		420ED2971969828200FD65A7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 420ED2761969828100FD65A7 /* Cocoa.framework */; };
 		420ED29F1969828200FD65A7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 420ED29D1969828200FD65A7 /* InfoPlist.strings */; };
 		420ED2A11969828200FD65A7 /* OTWebImageDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 420ED2A01969828200FD65A7 /* OTWebImageDemoTests.m */; };
+		420ED2B5196982D600FD65A7 /* NSImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 420ED2AC196982D600FD65A7 /* NSImageView+WebCache.m */; };
+		420ED2B6196982D600FD65A7 /* OTFileCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 420ED2AF196982D600FD65A7 /* OTFileCacheManager.m */; };
+		420ED2B7196982D600FD65A7 /* OTHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 420ED2B2196982D600FD65A7 /* OTHTTPRequest.m */; };
+		420ED2B8196982D600FD65A7 /* OTWebImageDownloadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 420ED2B4196982D600FD65A7 /* OTWebImageDownloadRequest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +54,14 @@
 		420ED29C1969828200FD65A7 /* OTWebImageDemoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OTWebImageDemoTests-Info.plist"; sourceTree = "<group>"; };
 		420ED29E1969828200FD65A7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		420ED2A01969828200FD65A7 /* OTWebImageDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OTWebImageDemoTests.m; sourceTree = "<group>"; };
+		420ED2AB196982D600FD65A7 /* NSImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImageView+WebCache.h"; sourceTree = "<group>"; };
+		420ED2AC196982D600FD65A7 /* NSImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImageView+WebCache.m"; sourceTree = "<group>"; };
+		420ED2AE196982D600FD65A7 /* OTFileCacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTFileCacheManager.h; sourceTree = "<group>"; };
+		420ED2AF196982D600FD65A7 /* OTFileCacheManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTFileCacheManager.m; sourceTree = "<group>"; };
+		420ED2B1196982D600FD65A7 /* OTHTTPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTHTTPRequest.h; sourceTree = "<group>"; };
+		420ED2B2196982D600FD65A7 /* OTHTTPRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTHTTPRequest.m; sourceTree = "<group>"; };
+		420ED2B3196982D600FD65A7 /* OTWebImageDownloadRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTWebImageDownloadRequest.h; sourceTree = "<group>"; };
+		420ED2B4196982D600FD65A7 /* OTWebImageDownloadRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTWebImageDownloadRequest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +88,7 @@
 		420ED26A1969828100FD65A7 = {
 			isa = PBXGroup;
 			children = (
+				420ED2AA196982D600FD65A7 /* OTWebImage */,
 				420ED27C1969828100FD65A7 /* OTWebImageDemo */,
 				420ED29A1969828200FD65A7 /* OTWebImageDemoTests */,
 				420ED2751969828100FD65A7 /* Frameworks */,
@@ -152,6 +165,37 @@
 				420ED29D1969828200FD65A7 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		420ED2AA196982D600FD65A7 /* OTWebImage */ = {
+			isa = PBXGroup;
+			children = (
+				420ED2AB196982D600FD65A7 /* NSImageView+WebCache.h */,
+				420ED2AC196982D600FD65A7 /* NSImageView+WebCache.m */,
+				420ED2B3196982D600FD65A7 /* OTWebImageDownloadRequest.h */,
+				420ED2B4196982D600FD65A7 /* OTWebImageDownloadRequest.m */,
+				420ED2AD196982D600FD65A7 /* OTFileCacheManager */,
+				420ED2B0196982D600FD65A7 /* OTHTTPRequest */,
+			);
+			path = OTWebImage;
+			sourceTree = "<group>";
+		};
+		420ED2AD196982D600FD65A7 /* OTFileCacheManager */ = {
+			isa = PBXGroup;
+			children = (
+				420ED2AE196982D600FD65A7 /* OTFileCacheManager.h */,
+				420ED2AF196982D600FD65A7 /* OTFileCacheManager.m */,
+			);
+			path = OTFileCacheManager;
+			sourceTree = "<group>";
+		};
+		420ED2B0196982D600FD65A7 /* OTHTTPRequest */ = {
+			isa = PBXGroup;
+			children = (
+				420ED2B1196982D600FD65A7 /* OTHTTPRequest.h */,
+				420ED2B2196982D600FD65A7 /* OTHTTPRequest.m */,
+			);
+			path = OTHTTPRequest;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,7 +297,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				420ED28A1969828100FD65A7 /* AppDelegate.m in Sources */,
+				420ED2B6196982D600FD65A7 /* OTFileCacheManager.m in Sources */,
 				420ED2831969828100FD65A7 /* main.m in Sources */,
+				420ED2B7196982D600FD65A7 /* OTHTTPRequest.m in Sources */,
+				420ED2B5196982D600FD65A7 /* NSImageView+WebCache.m in Sources */,
+				420ED2B8196982D600FD65A7 /* OTWebImageDownloadRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
