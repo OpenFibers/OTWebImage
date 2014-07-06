@@ -17,3 +17,6 @@ Then the web image will be loaded into `imageView`, like this:
 #Used libs
 [OTFileCacheManager](https://github.com/OpenFibers/OTFileCacheManager "OTFileCacheManager")  
 [OTHTTPRequest](https://github.com/OpenFibers/OTHTTPRequest "OTHTTPRequest")
+
+#Lisence
+MIT.
