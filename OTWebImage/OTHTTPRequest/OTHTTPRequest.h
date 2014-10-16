@@ -10,10 +10,34 @@
 
 @class OTHTTPRequest;
 
+@interface OTHTTPRequestUploadFile : NSObject
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *fileName;
+@property (nonatomic, retain) NSString *contentType;
+@property (nonatomic, retain) NSData *fileData;
+@end
+
 @interface NSMutableURLRequest (GetAndPostParams)
 
+//Simple request with get params.
 - (void)setUpGetParams:(NSDictionary *)dictionary;
-- (void)setUpPostParams:(NSDictionary *)dictionary;
+
+//Simple request with post params.
+- (void)setUpPostParams:(NSDictionary *)postParams;
+
+//Multipart form data request with post params, and single file's data.
+//Using NSUTF8StringEncoding.
+- (void)setUpMultiPartFormDataRequestWithPostParams:(NSDictionary *)postParams file:(OTHTTPRequestUploadFile *)file;
+
+//Multipart form data request with post params, and files' data.
+//Each member of `filesArray` is an `OTHTTPRequestUploadFile`.
+//Using NSUTF8StringEncoding.
+- (void)setUpMultiPartFormDataRequestWithPostParams:(NSDictionary *)postParams filesArray:(NSArray *)filesArray;
+
+//Multipart form data request with post params, and files' data.
+//Each member of `filesArray` is an `OTHTTPRequestUploadFile`.
+//Using specific string encoding.
+- (void)setUpMultiPartFormDataRequestWithPostParams:(NSDictionary *)postParams filesArray:(NSArray *)filesArray encoding:(NSStringEncoding)encoding;
 
 @end
 
@@ -25,7 +49,9 @@
 - (void)otHTTPRequestFailed:(OTHTTPRequest *)request error:(NSError *)error;
 
 @optional
+- (void)otHTTPRequest:(OTHTTPRequest *)request didReceiveResponse:(NSURLResponse *)response;
 - (void)otHTTPRequest:(OTHTTPRequest *)request dataUpdated:(NSData *)data;
+- (void)otHTTPRequest:(OTHTTPRequest *)request dataUpdated:(NSData *)data totalData:(NSData *)totalData;
 
 @end
 

@@ -8,6 +8,18 @@
 
 #import "OTHTTPRequest.h"
 
+@implementation OTHTTPRequestUploadFile
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        self.fileName = @"fileName";
+        self.name = @"name";
+    }
+    return self;
+}
+@end
+
 @implementation NSMutableURLRequest (GetAndPostParams)
 
 - (void)setUpGetParams:(NSDictionary *)dictionary
@@ -23,7 +35,10 @@
                 [getString appendString:[OTHTTPRequest urlEncode:key]];
                 [getString appendString:@"="];
                 [getString appendString:[OTHTTPRequest urlEncode:value]];
-                [getString appendString:@"&"];
+                if ([dictionary.allKeys lastObject] != key)
+                {
+                    [getString appendString:@"&"];
+                }
             }
         }
     }
@@ -53,17 +68,107 @@
                 [postString appendString:[OTHTTPRequest urlEncode:key]];
                 [postString appendString:@"="];
                 [postString appendString:[OTHTTPRequest urlEncode:value]];
-                [postString appendString:@"&"];
+                
+                if ([dictionary.allKeys lastObject] != key)
+                {
+                    [postString appendString:@"&"];
+                }
             }
         }
     }
     
     NSData *postData = [postString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
-    NSString *postLength = [NSString stringWithFormat:@"%tu", [postData length]];
-    
-    [self setValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-    [self setValue:postLength forHTTPHeaderField:@"Content-Length"];
     [self setHTTPBody:postData];
+
+    NSString *postLength = [NSString stringWithFormat:@"%tu", [postData length]];
+    [self setValue:postLength forHTTPHeaderField:@"Content-Length"];
+
+    [self setValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    [self setHTTPMethod:@"POST"];
+}
+
+//Multipart form data request with post params, and single file's data.
+//Using NSUTF8StringEncoding.
+- (void)setUpMultiPartFormDataRequestWithPostParams:(NSDictionary *)postParams file:(OTHTTPRequestUploadFile *)file
+{
+    [self setUpMultiPartFormDataRequestWithPostParams:postParams filesArray:@[file]];
+}
+
+//Multipart form data request with post params, and files' data.
+//Each member of `filesArray` is an `OTHTTPRequestUploadFile`.
+//Using NSUTF8StringEncoding.
+- (void)setUpMultiPartFormDataRequestWithPostParams:(NSDictionary *)postParams filesArray:(NSArray *)filesArray
+{
+    [self setUpMultiPartFormDataRequestWithPostParams:postParams filesArray:filesArray encoding:NSUTF8StringEncoding];
+}
+
+//Multipart form data request with post params, and files' data.
+//Each member of `filesArray` is an `OTHTTPRequestUploadFile`.
+//Using specific string encoding.
+- (void)setUpMultiPartFormDataRequestWithPostParams:(NSDictionary *)postParams filesArray:(NSArray *)filesArray encoding:(NSStringEncoding)encoding
+{
+    if (!encoding)
+    {
+        encoding = NSUTF8StringEncoding;
+    }
+    NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(encoding));
+	
+	// We don't bother to check if post data contains the boundary, since it's pretty unlikely that it does.
+    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
+    NSString *uuidString = (__bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
+    CFRelease(uuid);
+    
+	NSString *stringBoundary = [NSString stringWithFormat:@"0xKhTmLbOuNdArY-%@",uuidString];
+	
+    if (![self.allHTTPHeaderFields.allKeys containsObject:@"Content-Type"])
+    {
+        [self setValue:[NSString stringWithFormat:@"multipart/form-data; charset=%@; boundary=%@", charset, stringBoundary] forHTTPHeaderField:@"Content-Type"];
+    }
+    
+    NSMutableData *postBodyData = [NSMutableData data];
+    [postBodyData appendData:[[NSString stringWithFormat:@"--%@\r\n",stringBoundary] dataUsingEncoding:encoding]];
+	
+	// Adds post data
+	NSString *endItemBoundary = [NSString stringWithFormat:@"\r\n--%@\r\n",stringBoundary];
+	NSUInteger i=0;
+	for (NSString *eachKey in postParams.allKeys)
+    {
+        [postBodyData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n",eachKey] dataUsingEncoding:encoding]];
+        [postBodyData appendData:[postParams[eachKey] dataUsingEncoding:encoding]];
+		i++;
+		if (i != [postParams.allKeys count] || [filesArray count] > 0)
+        {
+            //Only add the boundary if this is not the last item in the post body
+            [postBodyData appendData:[endItemBoundary dataUsingEncoding:encoding]];
+		}
+	}
+	
+	// Adds files to upload
+	i=0;
+	for (OTHTTPRequestUploadFile *eachFile in filesArray)
+    {
+        [postBodyData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", eachFile.name, eachFile.fileName] dataUsingEncoding:encoding]];
+
+        [postBodyData appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n\r\n", eachFile.contentType ? eachFile.contentType : @"application/octet-stream"] dataUsingEncoding:encoding]];
+		
+		NSData *data = eachFile.fileData;
+		if ([data isKindOfClass:[NSData class]])
+        {
+            [postBodyData appendData:data];
+		}
+		i++;
+		// Only add the boundary if this is not the last item in the post body
+		if (i != [filesArray count])
+        {
+            [postBodyData appendData:[endItemBoundary dataUsingEncoding:encoding]];
+		}
+	}
+    [postBodyData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",stringBoundary] dataUsingEncoding:encoding]];
+    [self setHTTPBody:postBodyData];
+    
+    NSString *postLength = [NSString stringWithFormat:@"%tu", [postBodyData length]];
+    [self setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    
     [self setHTTPMethod:@"POST"];
 }
 
@@ -256,6 +361,10 @@
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
     _response = response;
+    if ([self.delegate respondsToSelector:@selector(otHTTPRequest:didReceiveResponse:)])
+    {
+        [self.delegate otHTTPRequest:self didReceiveResponse:response];
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -263,8 +372,12 @@
     [_data appendData:data];
     if ([self.delegate respondsToSelector:@selector(otHTTPRequest:dataUpdated:)])
     {
+        [self.delegate otHTTPRequest:self dataUpdated:data];
+    }
+    if ([self.delegate respondsToSelector:@selector(otHTTPRequest:dataUpdated:totalData:)])
+    {
         NSData *callbackData = [NSData dataWithData:_data];
-        [self.delegate otHTTPRequest:self dataUpdated:callbackData];
+        [self.delegate otHTTPRequest:self dataUpdated:data totalData:callbackData];
     }
 }
 
@@ -276,7 +389,10 @@
     }
     if (self.shouldClearCachedResponseWhenRequestDone)
     {
-        [[NSURLCache sharedURLCache] removeCachedResponseForRequest:_request];
+        if (_request.URL)
+        {
+            [[NSURLCache sharedURLCache] removeCachedResponseForRequest:_request];
+        }
     }
 }
 
@@ -288,7 +404,10 @@
     }
     if (self.shouldClearCachedResponseWhenRequestDone)
     {
-        [[NSURLCache sharedURLCache] removeCachedResponseForRequest:_request];
+        if (_request.URL)
+        {
+            [[NSURLCache sharedURLCache] removeCachedResponseForRequest:_request];
+        }
     }
     [self cancel];
 }

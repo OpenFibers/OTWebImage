@@ -89,11 +89,11 @@
     [_request cancel];
 }
 
-- (void)otHTTPRequest:(OTHTTPRequest *)request dataUpdated:(NSData *)data
+- (void)otHTTPRequest:(OTHTTPRequest *)request dataUpdated:(NSData *)data totalData:(NSData *)totalData
 {
     if ([self.delegate respondsToSelector:@selector(otWebImageDownloadRequest:imageDataUpdated:)])
     {
-        [self.delegate otWebImageDownloadRequest:self imageDataUpdated:data];
+        [self.delegate otWebImageDownloadRequest:self imageDataUpdated:totalData];
     }
 }
 
