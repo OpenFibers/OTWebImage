@@ -62,17 +62,23 @@
 - (void)start
 {
     OTFileCacheManager *cacheManager = [[self class] fileCacheManagerInstance];
+    BOOL useCacheSuccessed = NO;
     if ([cacheManager cacheDataExistForKey:_URLString])
     {
         if ([self.delegate respondsToSelector:@selector(otWebImageDownloadRequest:downloadSuccessedWithData:isFromCache:)])
         {
             NSData *data = [cacheManager dataForKey:_URLString];
-            [self.delegate otWebImageDownloadRequest:self
-                           downloadSuccessedWithData:data
-                                         isFromCache:YES];
+            if (data)
+            {
+                useCacheSuccessed = YES;
+                [self.delegate otWebImageDownloadRequest:self
+                               downloadSuccessedWithData:data
+                                             isFromCache:YES];
+            }
         }
     }
-    else
+
+    if (!useCacheSuccessed)
     {
         if (!_request)
         {
