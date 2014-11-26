@@ -72,7 +72,7 @@
 //Create request with a NSURLRequest.
 - (id)initWithNSURLRequest:(NSURLRequest *)request;
 
-@property (nonatomic, assign) id<OTHTTPRequestDelegate> delegate;
+@property (nonatomic, weak) id<OTHTTPRequestDelegate> delegate;
 @property (nonatomic, retain) id userInfo;
 
 #pragma mark - Options

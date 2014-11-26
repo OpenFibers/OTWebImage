@@ -17,7 +17,7 @@
 
 @interface NSImageView (WebCache)
 
-@property (nonatomic, assign) id<NSImageViewWebCacheDelegate> webCacheDelegate;
+@property (nonatomic, weak) id<NSImageViewWebCacheDelegate> webCacheDelegate;
 @property (nonatomic, retain) NSURL *imageURL;
 - (void)cancelWebImageLoad;
 
